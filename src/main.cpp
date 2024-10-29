@@ -1,25 +1,3 @@
-#include <Arduino.h>
-
-
-
-
-// // put function declarations here:
-// int myFunction(int, int);
-
-// void setup() {
-//   // put your setup code here, to run once:
-//   int result = myFunction(2, 3);
-// }
-
-// void loop() {
-//   // put your main code here, to run repeatedly:
-// }
-
-// // put function definitions here:
-// int myFunction(int x, int y) {
-//   return x + y;
-// }
-
 // Motor Controller for Loop Antenna
 // K3DIY - Sam Bell
 
@@ -29,12 +7,13 @@ int debounce=150;
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include <LiquidCrystal.h>
+#include "global.h"
 
 //  Serial.begin(9600);
 
 
 /* Added a library to work with AA-30 ZERO analyzer */
-#include <RigExpertZero.h>
+
 // for Zero
 #define RX_PIN 2
 #define TX_PIN 3
@@ -128,14 +107,13 @@ byte menuCursor[8] = {
 // Setting the LCD shields pins
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
-RigExpertZero ZERO(RX_PIN, TX_PIN);
 
 void setup() {
 //  Initializes serial communication
 //  Serial.begin(9600);
 //  Serial3.end();
 
-  ZERO.startZero();
+  // ZERO.startZero();
   delay(50);
 
   // Initializes and clears the LCD screen
@@ -156,13 +134,6 @@ void setup() {
   lcd.createChar(2, downArrow);
   
 }
-
-void loop() {
-  mainMenuDraw();
-  drawCursor();
-  operateMainMenu();
-}
-
 
 //  Draws the turns counter in the upper right hand corner of the display.  Passing true erases the counter prior to writing it.
 void drawCounter(bool reset_flag) {
@@ -310,7 +281,7 @@ void menuItem1() { // Zero Function - executes when you select the 1st item from
           // and loop for the rest...
           for (i=1; i<AntennaMemoryCount; i++)
           {
-            TurnMotor (NumberTurnsPerMemory,0);
+            TurnMotor(NumberTurnsPerMemory,0);
             turnsCounter = turnsCounter + NumberTurnsPerMemory;
             Scan(ScanFrequency-1000000,ScanFrequency + 1000000);
             AntennaMemory[i][2]= ScanFrequency/1000;
@@ -786,9 +757,9 @@ f=0;
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(f);
-      ZERO.startMeasure(f);             // start measurement
+      // ZERO.startMeasure(f);             // start measurement
       delay(ScanDelay);
-      SWR = ZERO.getSWR();            // get SWR value
+      // SWR = ZERO.getSWR();            // get SWR value
       if (SWR < SWRmin)
       {
         SWRmin = SWR;
@@ -802,9 +773,9 @@ f=0;
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(f);
-      ZERO.startMeasure(f);             // start measurement
+      // ZERO.startMeasure(f);             // start measurement
       delay(ScanDelay);
-      SWR = ZERO.getSWR();            // get SWR value
+      // SWR = ZERO.getSWR();            // get SWR value
       if (SWR < SWRmin)
       {
         SWRmin = SWR;
@@ -818,9 +789,9 @@ f=0;
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(f);
-      ZERO.startMeasure(f);             // start measurement
+      // ZERO.startMeasure(f);             // start measurement
       delay(ScanDelay);
-      SWR = ZERO.getSWR();            // get SWR value
+      // SWR = ZERO.getSWR();            // get SWR value
       if (SWR < SWRmin)
       {
         SWRmin = SWR;
@@ -863,8 +834,17 @@ void PrintFRQ()
       lcd.print(FRQstr); 
 }
 
+void loop() {
+  mainMenuDraw();
+  drawCursor();
+  operateMainMenu();
+}
 
 
+
+// This function will generate the 2 menu items that can fit on the screen. They will change as you scroll through your menu. Up and down arrows will indicate your current menu position.
+
+// When called, this function will erase the current cursor and redraw it based on the cursorPosition and menuPage variables.
 /***************************************************************************************
     Name    : LCD Button Shield Menu - Courtesy of:
     Author  : Paul Siewert
