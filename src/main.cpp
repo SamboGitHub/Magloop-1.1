@@ -108,32 +108,6 @@ byte menuCursor[8] = {
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 
-void setup() {
-//  Initializes serial communication
-//  Serial.begin(9600);
-//  Serial3.end();
-
-  // ZERO.startZero();
-  delay(50);
-
-  // Initializes and clears the LCD screen
-  lcd.begin(16, 2);
-  lcd.clear();
-
-  // populate strings
-  step_size_string.reserve(7);
-  step_size_string = "10     ";
-
-  direction_str.reserve(4);
-  direction_str = "";
-    
-  
-  // Creates the byte for the 3 custom characters
-  lcd.createChar(0, menuCursor);
-  lcd.createChar(1, upArrow);
-  lcd.createChar(2, downArrow);
-  
-}
 
 //  Draws the turns counter in the upper right hand corner of the display.  Passing true erases the counter prior to writing it.
 void drawCounter(bool reset_flag) {
@@ -834,7 +808,37 @@ void PrintFRQ()
       lcd.print(FRQstr); 
 }
 
-void loop() {
+void setup()
+{
+//  Initializes serial communication
+//  Serial.begin(9600);
+//  Serial3.end();
+
+  // ZERO.startZero();
+  delay(50);
+
+  // Initializes and clears the LCD screen
+  lcd.begin(16, 2);
+  lcd.clear();
+
+  // populate strings
+  step_size_string.reserve(7);
+  step_size_string = "10     ";
+
+  direction_str.reserve(4);
+  direction_str = "";
+    
+  
+  // Creates the byte for the 3 custom characters
+  lcd.createChar(0, menuCursor);
+  lcd.createChar(1, upArrow);
+  lcd.createChar(2, downArrow);
+  
+}
+
+
+void loop()
+{
   mainMenuDraw();
   drawCursor();
   operateMainMenu();
