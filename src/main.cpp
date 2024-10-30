@@ -58,7 +58,7 @@ int savedDistance = 0;
 // Menu control variables
 int menuPage = 0;
 int maxMenuPages = round(((sizeof(menuItems) / sizeof(String)) / 2) + .5);
-int cursorPosition = 0;
+unsigned int cursorPosition = 0;
 
 // Creates 3 custom characters for the menu display
 byte downArrow[8] = {
@@ -603,7 +603,7 @@ void menuItem3()
 { // Presets - Function executes when you select the 3rd item from main menu
 
   int activeButton = 0;
-  int row = 0;
+  unsigned int row = 0;
   int button;
   int choice = 0;
 
