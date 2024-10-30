@@ -8,6 +8,7 @@ int debounce = 150;
 #include <Adafruit_MotorShield.h>
 #include <LiquidCrystal.h>
 #include "global.h"
+#include <SPI.h>
 
 //  Serial.begin(9600);
 
@@ -480,7 +481,7 @@ void menuItem1()
 void menuItem2()
 { // Manual Tune - Function executes when you select the 2nd item from main menu
   int activeButton = 0;
-  char choice = 'N';
+  // char choice = 'N';
 
   lcd.clear();
   drawCounter(true);
@@ -603,7 +604,7 @@ void menuItem3()
 { // Presets - Function executes when you select the 3rd item from main menu
 
   int activeButton = 0;
-  unsigned int row = 0;
+  // unsigned int row = 0;
   int button;
   int choice = 0;
 
