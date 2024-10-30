@@ -257,7 +257,7 @@ void TurnMotor(int step_size, int direction)
   myMotor->release();
 }
 
-int ManualDisplay(String direction)
+void ManualDisplay(String direction)
 {
 
   lcd.setCursor(0, 1); // move to the begining of the second line
