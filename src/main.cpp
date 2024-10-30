@@ -194,6 +194,171 @@ void setFrequency()
   drawFrequency(true);
 }
 
+
+// This function is called whenever a button press is evaluated. The LCD shield works by observing a voltage drop across the buttons all hooked up to A0.
+int evaluateButton(int x)
+{
+  int result = 0;
+  if (x < 50)
+  {
+    result = 1; // right
+  }
+  else if (x < 195)
+  {
+    result = 2; // up
+  }
+  else if (x < 380)
+  {
+    result = 3; // down
+  }
+  else if (x < 555)
+  {
+    result = 4; // left
+  }
+  else if (x < 790)
+  {
+    result = 5; // select
+  }
+  return result;
+}
+
+void TurnMotor(int step_size, int direction)
+{
+  // Begin Motor Init //
+  // Create the motor shield object with the default I2C address
+  Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+  // Connect a stepper motor with 200 steps per revolution (1.8 degree)
+  // to motor port #2 (M3 and M4)
+  Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
+
+  ;
+  // End Motor Init //
+
+  // Initialize Motor Control Card
+  AFMS.begin(); // create with the default frequency 1.6KHz
+  // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
+
+  // Set motor speed
+  myMotor->setSpeed(speed);
+
+  switch (direction)
+  {
+  case 0:
+  {
+    myMotor->step(step_size, BACKWARD, DOUBLE);
+    break;
+  }
+  case 1:
+  {
+    myMotor->step(step_size, FORWARD, DOUBLE);
+    break;
+  }
+  }
+  myMotor->release();
+}
+
+int ManualDisplay(String direction)
+{
+
+  lcd.setCursor(0, 1); // move to the begining of the second line
+  lcd.print("                ");
+  lcd.setCursor(0, 1); // move to the begining of the second line
+  lcd.print(step_size_string);
+  lcd.print(" ");
+  lcd.print(direction);
+}
+
+void Scan(long Start, long Stop)
+{
+  // Variables from Scan
+  float SWRmin = 100000;
+  long Fmin = 100000000;
+  long f = 0;
+
+  SWRmin = 100000;
+  Fmin = 100000000;
+
+  f = 0;
+  // Slice 1
+  for (f = Start; f < Stop; f = f + 100000)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(f);
+    // ZERO.startMeasure(f);             // start measurement
+    delay(ScanDelay);
+    // SWR = ZERO.getSWR();            // get SWR value
+    if (SWR < SWRmin)
+    {
+      SWRmin = SWR;
+      Fmin = f;
+    }
+  }
+
+  // Slice 2
+  for (f = Fmin - 100000; f < Fmin + 100000; f = f + 10000)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(f);
+    // ZERO.startMeasure(f);             // start measurement
+    delay(ScanDelay);
+    // SWR = ZERO.getSWR();            // get SWR value
+    if (SWR < SWRmin)
+    {
+      SWRmin = SWR;
+      Fmin = f;
+    }
+  }
+
+  // Slice 3
+  for (f = Fmin - 10000; f < Fmin + 10000; f = f + 1000)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(f);
+    // ZERO.startMeasure(f);             // start measurement
+    delay(ScanDelay);
+    // SWR = ZERO.getSWR();            // get SWR value
+    if (SWR < SWRmin)
+    {
+      SWRmin = SWR;
+      Fmin = f;
+    }
+  }
+
+  //  Pass to Global Variables //
+  SWR = SWRmin;
+  ScanFrequency = Fmin;
+}
+
+void PrintSWR()
+{
+  // Since we can not print floats we get int & fraction as INT's
+  // if swr is 4.12 then v1=4 and v2=12 -- 1.04 then 1 and 4 printed as 1.04 using %d.%02d
+  int swr1 = SWR;
+  int swr2 = (SWR - swr1) * 100;
+  if (swr1 < 0)
+  {
+    swr1 = 99;
+    swr2 = 0;
+  }
+  sprintf(SWRstr, "SWR = %d.%02d", swr1, swr2); // comput swr as string
+  lcd.print(SWRstr);
+}
+
+void PrintFRQ()
+{
+  // Since we can not print floats we get int & fraction as INT's
+  // if swr is 4.12 then v1=4 and v2=12 -- 1.04 then 1 and 4 printed as 1.04 using %d.%02d
+
+  long frq1 = ScanFrequency / 1000000;
+  long frq2 = ScanFrequency - (frq1 * 1000000);
+
+  sprintf(FRQstr, "FRQ = %ld.%02ld", frq1, frq2); // comput frq as string
+  lcd.print(FRQstr);
+}
+
 void menuItem1()
 { // Zero Function - executes when you select the 1st item from main menu
   int activeButton = 0;
@@ -712,169 +877,6 @@ void operateMainMenu()
   }
 }
 
-// This function is called whenever a button press is evaluated. The LCD shield works by observing a voltage drop across the buttons all hooked up to A0.
-int evaluateButton(int x)
-{
-  int result = 0;
-  if (x < 50)
-  {
-    result = 1; // right
-  }
-  else if (x < 195)
-  {
-    result = 2; // up
-  }
-  else if (x < 380)
-  {
-    result = 3; // down
-  }
-  else if (x < 555)
-  {
-    result = 4; // left
-  }
-  else if (x < 790)
-  {
-    result = 5; // select
-  }
-  return result;
-}
-
-void TurnMotor(int step_size, int direction)
-{
-  // Begin Motor Init //
-  // Create the motor shield object with the default I2C address
-  Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-  // Connect a stepper motor with 200 steps per revolution (1.8 degree)
-  // to motor port #2 (M3 and M4)
-  Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
-
-  ;
-  // End Motor Init //
-
-  // Initialize Motor Control Card
-  AFMS.begin(); // create with the default frequency 1.6KHz
-  // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
-
-  // Set motor speed
-  myMotor->setSpeed(speed);
-
-  switch (direction)
-  {
-  case 0:
-  {
-    myMotor->step(step_size, BACKWARD, DOUBLE);
-    break;
-  }
-  case 1:
-  {
-    myMotor->step(step_size, FORWARD, DOUBLE);
-    break;
-  }
-  }
-  myMotor->release();
-}
-
-int ManualDisplay(String direction)
-{
-
-  lcd.setCursor(0, 1); // move to the begining of the second line
-  lcd.print("                ");
-  lcd.setCursor(0, 1); // move to the begining of the second line
-  lcd.print(step_size_string);
-  lcd.print(" ");
-  lcd.print(direction);
-}
-
-void Scan(long Start, long Stop)
-{
-  // Variables from Scan
-  float SWRmin = 100000;
-  long Fmin = 100000000;
-  long f = 0;
-
-  SWRmin = 100000;
-  Fmin = 100000000;
-
-  f = 0;
-  // Slice 1
-  for (f = Start; f < Stop; f = f + 100000)
-  {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(f);
-    // ZERO.startMeasure(f);             // start measurement
-    delay(ScanDelay);
-    // SWR = ZERO.getSWR();            // get SWR value
-    if (SWR < SWRmin)
-    {
-      SWRmin = SWR;
-      Fmin = f;
-    }
-  }
-
-  // Slice 2
-  for (f = Fmin - 100000; f < Fmin + 100000; f = f + 10000)
-  {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(f);
-    // ZERO.startMeasure(f);             // start measurement
-    delay(ScanDelay);
-    // SWR = ZERO.getSWR();            // get SWR value
-    if (SWR < SWRmin)
-    {
-      SWRmin = SWR;
-      Fmin = f;
-    }
-  }
-
-  // Slice 3
-  for (f = Fmin - 10000; f < Fmin + 10000; f = f + 1000)
-  {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(f);
-    // ZERO.startMeasure(f);             // start measurement
-    delay(ScanDelay);
-    // SWR = ZERO.getSWR();            // get SWR value
-    if (SWR < SWRmin)
-    {
-      SWRmin = SWR;
-      Fmin = f;
-    }
-  }
-
-  //  Pass to Global Variables //
-  SWR = SWRmin;
-  ScanFrequency = Fmin;
-}
-
-void PrintSWR()
-{
-  // Since we can not print floats we get int & fraction as INT's
-  // if swr is 4.12 then v1=4 and v2=12 -- 1.04 then 1 and 4 printed as 1.04 using %d.%02d
-  int swr1 = SWR;
-  int swr2 = (SWR - swr1) * 100;
-  if (swr1 < 0)
-  {
-    swr1 = 99;
-    swr2 = 0;
-  }
-  sprintf(SWRstr, "SWR = %d.%02d", swr1, swr2); // comput swr as string
-  lcd.print(SWRstr);
-}
-
-void PrintFRQ()
-{
-  // Since we can not print floats we get int & fraction as INT's
-  // if swr is 4.12 then v1=4 and v2=12 -- 1.04 then 1 and 4 printed as 1.04 using %d.%02d
-
-  long frq1 = ScanFrequency / 1000000;
-  long frq2 = ScanFrequency - (frq1 * 1000000);
-
-  sprintf(FRQstr, "FRQ = %ld.%02ld", frq1, frq2); // comput frq as string
-  lcd.print(FRQstr);
-}
 
 void setup()
 {
