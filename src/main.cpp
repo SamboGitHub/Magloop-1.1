@@ -32,14 +32,14 @@ int ScanDelay = 10;
 
 // Begin Motor Init
 unsigned turnsCounter = 0;
-int step_size = 10;
+int step_size = 100;
 String step_size_string;
 String direction_str;
 bool direction = 0; // 0 is down, 1 is up
 int speed = 500;
 // End Motor Init
 
-String menuItems[] = {"Zero", "Manual", "Presets", "Dump"};
+String menuItems[] = {" ", "Manual", "Presets", "Dump"};
 
 unsigned TotalTurns = 35000;
 int AntennaMemoryCount = 35;
@@ -47,7 +47,8 @@ unsigned AntennaMemory[36][2];
 int NumberTurnsPerMemory = 1000;
 long ScanWidth = 1000000;
 
-float InterpolatedFrequency = 0.000; // Interpolated
+// float InterpolatedFrequency = 0.000; // Interpolated
+float InterpolatedFrequency = 9.99; // Interpolated
 
 int i;
 int x;
@@ -191,7 +192,10 @@ void setFrequency()
   gapRatio = float(gapFreq) / float(gapTurns);
   deltaTurns = turnsCounter - minTurns;
   deltaFreq = float(deltaTurns) * float(gapRatio);
-  InterpolatedFrequency = (float(minFreq) + deltaFreq) / 1000;
+ 
+  InterpolatedFrequency = 9.99;
+  // InterpolatedFrequency = (float(minFreq) + deltaFreq) / 1000;
+  
   drawFrequency(true);
 }
 
@@ -518,30 +522,25 @@ void menuItem2()
       activeButton = 0;
       switch (step_size)
       {
-      case 10:
+      case 1:
+      {
+        step_size = 20;
+        step_size_string = F("1      ");
+        break;
+      }
+      case 20:
       {
         step_size = 100;
-        step_size_string = F("100    ");
+        step_size_string = F("20     ");
         break;
       }
       case 100:
       {
-        step_size = 1000;
-        step_size_string = F("1000   ");
+        step_size = 1;
+        step_size_string = F("100    ");
         break;
       }
-      case 1000:
-      {
-        step_size = 10000;
-        step_size_string = F("10000  ");
-        break;
-      }
-      case 10000:
-      {
-        step_size = 10;
-        step_size_string = F("10     ");
-        break;
-      }
+
       };
       ManualDisplay(direction_str);
       break;
@@ -550,28 +549,22 @@ void menuItem2()
       activeButton = 0;
       switch (step_size)
       {
-      case 10000:
-      {
-        step_size = 1000;
-        step_size_string = F("1000   ");
-        break;
-      }
-      case 1000:
-      {
-        step_size = 100;
-        step_size_string = F("100    ");
-        break;
-      }
       case 100:
       {
-        step_size = 10;
-        step_size_string = F("10     ");
+        step_size = 20;
+        step_size_string = F("20     ");
         break;
       }
-      case 10:
+      case 20:
       {
-        step_size = 10000;
-        step_size_string = F("10000   ");
+        step_size = 1;
+        step_size_string = F("1      ");
+        break;
+      }
+      case 1:
+      {
+        step_size = 100;
+        step_size_string = F("100     ");
         break;
       }
       };
@@ -812,7 +805,7 @@ void operateMainMenu()
       switch (cursorPosition)
       { // The case that is selected here is dependent on which menu page you are on and where the cursor is.
       case 0:
-        menuItem1();
+        // menuItem1(); // disabled the Zero function for now
         break;
       case 1:
         menuItem2();
