@@ -31,8 +31,8 @@ int ScanDelay = 10;
 // End General Init //
 
 // Begin Motor Init
-unsigned turnsCounter = 0;
-int step_size = 100;
+int turnsCounter = 0;
+int step_size = 1;
 String step_size_string;
 String direction_str;
 bool direction = 0; // 0 is down, 1 is up
@@ -125,14 +125,18 @@ void drawFrequency(bool reset_flag)
   if (reset_flag == 0)
   {
     lcd.setCursor(0, 0); // Set cursor to the top line
-    lcd.print(InterpolatedFrequency);
+
+    // lcd.print(InterpolatedFrequency);
+    lcd.print("K3DIY"); // turn of frequency display for now
   }
   else
   {
     lcd.setCursor(0, 0); // Set cursor to the top line
     lcd.print(F("      "));
     lcd.setCursor(0, 0); // Set cursor to the top line
-    lcd.print(InterpolatedFrequency, 3);
+
+    // lcd.print(InterpolatedFrequency, 3);
+    lcd.print("K3DIY"); // turn of frequency display for now
   };
 }
 
@@ -192,13 +196,12 @@ void setFrequency()
   gapRatio = float(gapFreq) / float(gapTurns);
   deltaTurns = turnsCounter - minTurns;
   deltaFreq = float(deltaTurns) * float(gapRatio);
- 
+
   InterpolatedFrequency = 9.99;
   // InterpolatedFrequency = (float(minFreq) + deltaFreq) / 1000;
-  
+
   drawFrequency(true);
 }
-
 
 // This function is called whenever a button press is evaluated. The LCD shield works by observing a voltage drop across the buttons all hooked up to A0.
 int evaluateButton(int x)
@@ -505,15 +508,15 @@ void menuItem2()
 
     switch (button)
     {
-    case 1: // This case will execute if the "right" button is pressed
+    case 1: // This case will execute if the "left" button is pressed
       button = 0;
       activeButton = 0;
       direction_str = F("Up  ");
-      direction = 0; // 1 is tune down, 0 is up
-      turnsCounter = turnsCounter - step_size;
+      direction = 1; // 1 is tune down, 0 is up
+      turnsCounter = turnsCounter + step_size;
       drawCounter(true);
       ManualDisplay(direction_str);
-      TurnMotor(step_size, 1); // 1 is up
+      TurnMotor(step_size, 0); // 0 is down
       setFrequency();
       break;
 
@@ -525,22 +528,21 @@ void menuItem2()
       case 1:
       {
         step_size = 20;
-        step_size_string = F("1      ");
+        step_size_string = F("20     ");
         break;
       }
       case 20:
       {
         step_size = 100;
-        step_size_string = F("20     ");
+        step_size_string = F("100    ");
         break;
       }
       case 100:
       {
         step_size = 1;
-        step_size_string = F("100    ");
+        step_size_string = F("1      ");
         break;
       }
-
       };
       ManualDisplay(direction_str);
       break;
@@ -571,20 +573,17 @@ void menuItem2()
       ManualDisplay(direction_str);
       break;
 
-    case 4: // This case will execute if the "left" button is pressed
+    case 4: // This case will execute if the "right" button is pressed
       button = 0;
       activeButton = 0;
       direction_str = F("Down");
-      direction = 1; // 1 is tune down, 0 is up
-      turnsCounter = turnsCounter + step_size;
+      direction = 0; // 1 is tune down, 0 is up
+      turnsCounter = turnsCounter - step_size;
       drawCounter(true);
       ManualDisplay(direction_str);
-      TurnMotor(step_size, 0); // 0 is down
-
+      TurnMotor(step_size, 1); // 1 is up
       setFrequency();
-
       break;
-
     case 5: // This case will execute if the "select (back)" button is pressed
       button = 0;
       activeButton = 1;
@@ -871,7 +870,6 @@ void operateMainMenu()
   }
 }
 
-
 void setup()
 {
   //  Initializes serial communication
@@ -887,7 +885,7 @@ void setup()
 
   // populate strings
   step_size_string.reserve(7);
-  step_size_string = "10     ";
+  step_size_string = "1      ";
 
   direction_str.reserve(4);
   direction_str = "";
@@ -896,6 +894,9 @@ void setup()
   lcd.createChar(0, menuCursor);
   lcd.createChar(1, upArrow);
   lcd.createChar(2, downArrow);
+
+  lcd.setCursor(0, 0); // Set cursor to the top line
+  lcd.print("K3DIY"); // turn of frequency display for now
 }
 
 void loop()
