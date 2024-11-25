@@ -32,18 +32,18 @@ int ScanDelay = 10;
 
 // Begin Motor Init
 int turnsCounter = 0;
-int step_size = 1;
-String step_size_string;
+int step_size = 100;
+String step_size_string = "100    ";
 String direction_str;
 bool direction = 0; // 0 is down, 1 is up
-int speed = 500;
+int speed = 1;
 // End Motor Init
 
 String menuItems[] = {" ", "Manual", "Presets", "Dump"};
 
 unsigned TotalTurns = 35000;
 int AntennaMemoryCount = 35;
-unsigned AntennaMemory[36][2];
+int AntennaMemory[36][2];
 int NumberTurnsPerMemory = 1000;
 long ScanWidth = 1000000;
 
@@ -525,13 +525,13 @@ void menuItem2()
       activeButton = 0;
       switch (step_size)
       {
-      case 1:
+      case 5:
       {
-        step_size = 20;
-        step_size_string = F("20     ");
+        step_size = 10;
+        step_size_string = F("10     ");
         break;
       }
-      case 20:
+      case 10:
       {
         step_size = 100;
         step_size_string = F("100    ");
@@ -539,8 +539,8 @@ void menuItem2()
       }
       case 100:
       {
-        step_size = 1;
-        step_size_string = F("1      ");
+        step_size = 5;
+        step_size_string = F("5      ");
         break;
       }
       };
@@ -553,17 +553,17 @@ void menuItem2()
       {
       case 100:
       {
-        step_size = 20;
-        step_size_string = F("20     ");
+        step_size = 10;
+        step_size_string = F("10     ");
         break;
       }
-      case 20:
+      case 10:
       {
-        step_size = 1;
-        step_size_string = F("1      ");
+        step_size = 5;
+        step_size_string = F("5      ");
         break;
       }
-      case 1:
+      case 5:
       {
         step_size = 100;
         step_size_string = F("100     ");
