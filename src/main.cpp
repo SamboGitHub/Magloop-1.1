@@ -243,7 +243,7 @@ void TurnMotor(int step_size, int direction)
   // End Motor Init //
 
   // Initialize Motor Control Card
-  AFMS.begin(); // create with the default frequency 1.6KHz
+  AFMS.begin(4096); // create with the default frequency 1.6KHz
   // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
   // Set motor speed
@@ -262,7 +262,7 @@ void TurnMotor(int step_size, int direction)
     break;
   }
   }
-  myMotor->release();
+  // myMotor->release();
 }
 
 void ManualDisplay(String direction)
@@ -525,6 +525,12 @@ void menuItem2()
       activeButton = 0;
       switch (step_size)
       {
+      case 1:
+      {
+        step_size = 5;
+        step_size_string = F("5      ");
+        break;
+      }
       case 5:
       {
         step_size = 10;
@@ -539,8 +545,8 @@ void menuItem2()
       }
       case 100:
       {
-        step_size = 5;
-        step_size_string = F("5      ");
+        step_size = 1;
+        step_size_string = F("1      ");
         break;
       }
       };
@@ -554,7 +560,7 @@ void menuItem2()
       case 100:
       {
         step_size = 10;
-        step_size_string = F("10     ");
+        step_size_string = F("10z      ");
         break;
       }
       case 10:
@@ -564,6 +570,12 @@ void menuItem2()
         break;
       }
       case 5:
+      {
+        step_size = 1;
+        step_size_string = F("1       ");
+        break;
+      }
+      case 1:
       {
         step_size = 100;
         step_size_string = F("100     ");

@@ -63,7 +63,8 @@ Adafruit_MotorShield::Adafruit_MotorShield(uint8_t addr) { _addr = addr; }
     @returns true if successful, false otherwise
 */
 /**************************************************************************/
-bool Adafruit_MotorShield::begin(uint16_t freq, TwoWire *theWire) {
+bool Adafruit_MotorShield::
+begin(uint16_t freq, TwoWire *theWire) {
   // init PWM w/_freq
   _pwm = Adafruit_MS_PWMServoDriver(_addr);
   if (!_pwm.begin(theWire))
