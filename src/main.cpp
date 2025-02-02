@@ -243,7 +243,7 @@ void TurnMotor(int step_size, int direction)
   // End Motor Init //
 
   // Initialize Motor Control Card
-  AFMS.begin(4096); // create with the default frequency 1.6KHz
+  AFMS.begin(); // create with the default frequency 1.6KHz
   // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
   // Set motor speed
