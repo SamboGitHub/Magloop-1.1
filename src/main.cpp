@@ -913,7 +913,9 @@ void setup()
   // Set Duty Cycle value (0-4096)
    AFMS.setPWM(2, 1024);
    AFMS.setPWM(7, 1024);
-   
+   AFMS.setPWM(8, 1024);
+   AFMS.setPWM(13, 1024);
+     
   
 
   // Initializes and clears the LCD screen
