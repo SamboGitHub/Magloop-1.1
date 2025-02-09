@@ -906,13 +906,13 @@ void setup()
   // ZERO.startZero();
   delay(50);
     // Initialize Motor Control Card
-  AFMS.begin(4096); 
+  AFMS.begin(); 
   // create with the default frequency 1.6KHz
   // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
  
   // Set Duty Cycle value (0-4096)
-   AFMS.setPWM(2, 2048);
-   AFMS.setPWM(7, 2048);
+   AFMS.setPWM(2, 1024);
+   AFMS.setPWM(7, 1024);
    
   
 
