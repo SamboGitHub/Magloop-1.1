@@ -277,7 +277,7 @@ void TurnMotor(int step_size, int direction)
     break;
   }
   }
-  myMotor->release();
+  //myMotor->release();
 }
 
 void ManualDisplay(String direction)
@@ -910,11 +910,10 @@ void setup()
   // create with the default frequency 1.6KHz
   // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
  
-  
-    for (uint8_t i = 0; i < 16; i++)
-    {
-      AFMS.setPWM(i, 2048);
-    }
+  // Set Duty Cycle value (0-4096)
+   AFMS.setPWM(2, 2048);
+   AFMS.setPWM(7, 2048);
+   
   
 
   // Initializes and clears the LCD screen
