@@ -31,6 +31,21 @@ int ScanDelay = 10;
 // End General Init //
 
 // Begin Motor Init
+
+
+  // Begin Motor Init //
+  // Create the motor shield object with the default I2C address
+  Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+  // Connect a stepper motor with 200 steps per revolution (1.8 degree)
+  // to motor port #2 (M3 and M4)
+  Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
+
+  
+  // End Motor Init //
+
+
+
+
 int turnsCounter = 0;
 int step_size = 100;
 String step_size_string = "100    ";
@@ -232,19 +247,19 @@ int evaluateButton(int x)
 
 void TurnMotor(int step_size, int direction)
 {
-  // Begin Motor Init //
-  // Create the motor shield object with the default I2C address
-  Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-  // Connect a stepper motor with 200 steps per revolution (1.8 degree)
-  // to motor port #2 (M3 and M4)
-  Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
+  // // Begin Motor Init //
+  // // Create the motor shield object with the default I2C address
+  // Adafruit_MotorShield AFMS = Adafruit_MotorShield();
+  // // Connect a stepper motor with 200 steps per revolution (1.8 degree)
+  // // to motor port #2 (M3 and M4)
+  // Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 2);
 
-  ;
-  // End Motor Init //
+  // ;
+  // // End Motor Init //
 
-  // Initialize Motor Control Card
-  AFMS.begin(); // create with the default frequency 1.6KHz
-  // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
+  // // Initialize Motor Control Card
+  // AFMS.begin(); // create with the default frequency 1.6KHz
+  // // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
 
   // Set motor speed
   myMotor->setSpeed(speed);
@@ -262,7 +277,7 @@ void TurnMotor(int step_size, int direction)
     break;
   }
   }
-  // myMotor->release();
+  myMotor->release();
 }
 
 void ManualDisplay(String direction)
@@ -890,6 +905,17 @@ void setup()
 
   // ZERO.startZero();
   delay(50);
+    // Initialize Motor Control Card
+  AFMS.begin(4096); 
+  // create with the default frequency 1.6KHz
+  // AFMS.begin(1000);  // OR with a different frequency, say 1KHz
+ 
+  
+    for (uint8_t i = 0; i < 16; i++)
+    {
+      AFMS.setPWM(i, 2048);
+    }
+  
 
   // Initializes and clears the LCD screen
   lcd.begin(16, 2);
